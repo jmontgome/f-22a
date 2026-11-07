@@ -85,6 +85,9 @@ enum InputCommands
 	flapsUp = 145,
 	flapsDown = 146,
 
+	// Cockpit Controls
+	JettisonFuelTanks = 178,
+
 	// Misc controls
 	resetTrim = 97,
 

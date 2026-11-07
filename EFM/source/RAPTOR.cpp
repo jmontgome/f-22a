@@ -127,8 +127,21 @@ void simulate_fuel_consumption(double dt)
 
         if (RAPTOR::external_fuel > 0) {
             double external_consumed = std::min(fuel_to_consume, RAPTOR::external_fuel);
+
+            for (auto& [station, fuel_qty] : RAPTOR::external_fuel_stations) {
+                double share = fuel_qty / RAPTOR::external_fuel;
+                fuel_qty = std::max(0.0, fuel_qty - external_consumed * share);
+            }
+
             RAPTOR::external_fuel = std::max(0.0, RAPTOR::external_fuel - external_consumed);
+            for (const auto& [station, fuel_qty] : RAPTOR::external_fuel_stations) {
+                RAPTOR::external_fuel += fuel_qty;
+            }
             fuel_to_consume -= external_consumed;
+
+            if (external_consumed > 0) {
+                g_mass_changes.push({external_consumed, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}});
+            }
         }
 
         if (fuel_to_consume > 0) {
@@ -347,7 +360,7 @@ void ed_fm_simulate(double dt) {
 
     double Cx0_ = lerp(FM_DATA::mach_table.data(), FM_DATA::cx0, FM_DATA::mach_table.size(), RAPTOR::mach);
     double wave_drag_factor = 1.0 + 0.85 * std::max(0.0, (RAPTOR::mach - 0.9) / 0.3) * (1.0 - std::min(1.0, (RAPTOR::mach - 1.2) / 1.0)) * std::max(0.0, 1.0 - RAPTOR::altitude_ASL / 9144.0);
-    double Drag = Cx0_ * wave_drag_factor + (FM_DATA::cx_brk * 1.2 * RAPTOR::airbrake_pos) + (FM_DATA::cx_flap * RAPTOR::flaps_pos) + (FM_DATA::cx_gear * RAPTOR::gear_pos);
+    double Drag = Cx0_ * wave_drag_factor + (FM_DATA::cx_ext_tank * RAPTOR::external_fuel_stations.size()) + (FM_DATA::cx_brk * 1.2 * RAPTOR::airbrake_pos) + (FM_DATA::cx_flap * RAPTOR::flaps_pos) + (FM_DATA::cx_gear * RAPTOR::gear_pos);
 
     double AoA_drag = lerp(FM_DATA::AoA_table, FM_DATA::AoA_drag_factor, sizeof(FM_DATA::AoA_table) / sizeof(double), fabs(RAPTOR::alpha));
     Drag += AoA_drag;
@@ -523,6 +536,7 @@ void ed_fm_simulate(double dt) {
         elevator_cmd = limit(elevator_cmd, -1.0, 1.0);
 
         const double g_reduction_factor = 0.1;
+        double g_limit_pos = RAPTOR::external_fuel_stations.empty() ? RAPTOR::g_limit_positive : RAPTOR::g_limit_positive_tanks_equipped;
 
         if (RAPTOR::g > RAPTOR::g_limit_positive && elevator_cmd > 0.0) {
             double g_excess = RAPTOR::g - RAPTOR::g_limit_positive;
@@ -1046,6 +1060,12 @@ void ed_fm_set_command(int command, float value) {
         }
         RAPTOR::pitch_trim = limit(RAPTOR::pitch_trim - 0.01, -1.0, 1.0);
         break;
+    case JettisonFuelTanks:
+        RAPTOR::external_fuel_stations.clear();
+        RAPTOR::external_tanks_equipped = false;
+        RAPTOR::external_fuel = 0.0;
+        RAPTOR::total_fuel = RAPTOR::internal_fuel;
+        break;
     case resetTrim:
         RAPTOR::autotrim_elevator_cmd = limit(RAPTOR::pitch_trim, -0.2, 0.2);
         RAPTOR::pitch_trim = RAPTOR::roll_trim = RAPTOR::yaw_trim = 0;
@@ -1245,7 +1265,7 @@ double ed_fm_get_internal_fuel() {
 
 void ed_fm_set_external_fuel(int station, double fuel, double x, double y, double z) {
     if (fuel > 0 && RAPTOR::external_fuel_stations.find(station) == RAPTOR::external_fuel_stations.end()) {
-        RAPTOR::external_fuel_stations[station] = 1850.0;
+        RAPTOR::external_fuel_stations[station] = fuel;
         RAPTOR::external_tanks_equipped = true;
     }
     else if (fuel <= 0) {

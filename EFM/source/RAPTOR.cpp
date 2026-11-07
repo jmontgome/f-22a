@@ -133,7 +133,7 @@ void simulate_fuel_consumption(double dt)
                 fuel_qty = std::max(0.0, fuel_qty - external_consumed * share);
             }
 
-            RAPTOR::external_fuel = std::max(0.0, RAPTOR::external_fuel - external_consumed);
+            RAPTOR::external_fuel = 0.0;
             for (const auto& [station, fuel_qty] : RAPTOR::external_fuel_stations) {
                 RAPTOR::external_fuel += fuel_qty;
             }

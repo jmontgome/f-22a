@@ -1588,14 +1588,20 @@ double ed_fm_get_param(unsigned index) {
 
 void ed_fm_refueling_add_fuel(double fuel)
 {
+    constexpr double kBoomFlowRateKgPerSec = 45.0;
+    static double last_refuel_clock = -1.0;
+
     if (fuel > 0) {
-        double dt = 0.006;
-        double fuel_to_add = std::min(fuel, 100.0 * dt);
+        double dt = (last_refuel_clock < 0.0) ? 0.0 : RAPTOR::fm_clock - last_refuel_clock;
+        dt = std::min(dt, 0.1);
+        last_refuel_clock = RAPTOR::fm_clock;
+
+        double fuel_to_add = std::min(fuel, kBoomFlowRateKgPerSec * dt);
 
         double internal_space = RAPTOR::max_internal_fuel - RAPTOR::internal_fuel;
         double internal_added = std::min(fuel_to_add, internal_space);
         if (internal_added > 0) {
-            RAPTOR::internal_fuel += internal_added * 10;
+            RAPTOR::internal_fuel += internal_added;
             double fuel_fraction = std::min(1.0, std::max(0.0, RAPTOR::internal_fuel / RAPTOR::max_internal_fuel));
             g_mass_changes.push({
                 -internal_added,

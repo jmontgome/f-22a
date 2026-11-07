@@ -538,8 +538,8 @@ void ed_fm_simulate(double dt) {
         const double g_reduction_factor = 0.1;
         double g_limit_pos = RAPTOR::external_fuel_stations.empty() ? RAPTOR::g_limit_positive : RAPTOR::g_limit_positive_tanks_equipped;
 
-        if (RAPTOR::g > RAPTOR::g_limit_positive && elevator_cmd > 0.0) {
-            double g_excess = RAPTOR::g - RAPTOR::g_limit_positive;
+        if (RAPTOR::g > g_limit_pos && elevator_cmd > 0.0) {
+            double g_excess = RAPTOR::g - g_limit_pos;
             elevator_cmd -= g_excess * g_reduction_factor;
             elevator_cmd = std::max(elevator_cmd, 0.0);
         }
@@ -1613,7 +1613,7 @@ void ed_fm_refueling_add_fuel(double fuel)
 
     if (fuel > 0) {
         double dt = (last_refuel_clock < 0.0) ? 0.0 : RAPTOR::fm_clock - last_refuel_clock;
-        dt = std::min(dt, 0.1);
+        dt = std::min(0.0, std::min(dt, 0.1));
         last_refuel_clock = RAPTOR::fm_clock;
 
         double fuel_to_add = std::min(fuel, kBoomFlowRateKgPerSec * dt);

@@ -1613,7 +1613,7 @@ void ed_fm_refueling_add_fuel(double fuel)
 
     if (fuel > 0) {
         double dt = (last_refuel_clock < 0.0) ? 0.0 : RAPTOR::fm_clock - last_refuel_clock;
-        dt = std::min(0.0, std::min(dt, 0.1));
+        dt = std::max(0.0, std::min(dt, 0.1));
         last_refuel_clock = RAPTOR::fm_clock;
 
         double fuel_to_add = std::min(fuel, kBoomFlowRateKgPerSec * dt);

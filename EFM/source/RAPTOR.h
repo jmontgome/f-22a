@@ -41,7 +41,7 @@ namespace FM_DATA
     double cx_brk = 0.062;
     double cx_flap = 0.042;
     double cy_flap = 0.048;
-    double cx_ext_tank = 0.00625;
+    double cx_ext_tank = 0.0025;
 
     double cx0[] = { 0.013, 0.0135, 0.014, 0.021, 0.0358, 0.0505, 0.0455, 0.04175, 0.038, 0.037, 0.0368, 0.0362, 0.039 };
     double Cya[] = { 0.015, 0.055, 0.07, 0.065, 0.06, 0.055, 0.05, 0.045, 0.04, 0.0375, 0.035, 0.0325, 0.03 };
@@ -173,7 +173,7 @@ namespace RAPTOR {
     double tv_angle = 0.0;
 
     double g_assist_pos = 0;
-    double g_limit_positive = 11.0;
+    double g_limit_positive = 9.5;
     double g_limit_positive_tanks_equipped = 9.0;
     double g_limit_negative = -4.0;
 

@@ -1922,13 +1922,12 @@ void CockpitManager::initialize() {
     draw_args_[713] = static_cast<float>(getParameter("AAR_KNOB", 0.0));
     draw_args_[714] = static_cast<float>(getParameter("FORM_KNOB", 0.0));
     draw_args_[715] = static_cast<float>(getParameter("NAV_LIGHT_SWITCH", 0.0));
-
-
-    param_api_.setParamNumber(param_handles_["MAIN_POWER"], (RAPTOR::left_engine_state == RAPTOR::RUNNING || RAPTOR::right_engine_state == RAPTOR::RUNNING) ? 1.0 : 0.0);
-    param_api_.setParamNumber(param_handles_["BATTERY_POWER"], (RAPTOR::left_engine_switch || RAPTOR::right_engine_switch) ? 1.0 : 0.0);
 }
 
 void CockpitManager::update(double dt) {
+    param_api_.setParamNumber(param_handles_["MAIN_POWER"], (RAPTOR::left_engine_state == RAPTOR::RUNNING || RAPTOR::right_engine_state == RAPTOR::RUNNING) ? 1.0 : 0.0);
+    param_api_.setParamNumber(param_handles_["BATTERY_POWER"], (RAPTOR::left_engine_switch || RAPTOR::right_engine_switch) ? 1.0 : 0.0);
+
     updateGearLights(dt);
     updateTaxiLandingLights(dt);
     updateAARLight(dt);

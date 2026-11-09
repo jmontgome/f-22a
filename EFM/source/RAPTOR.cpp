@@ -1272,10 +1272,6 @@ void ed_fm_set_external_fuel(int station, double fuel, double x, double y, doubl
         RAPTOR::external_fuel_stations.erase(station);
         RAPTOR::external_tanks_equipped = !RAPTOR::external_fuel_stations.empty();
     }
-    else {
-        RAPTOR::external_fuel_stations[station] = fuel;
-        RAPTOR::external_tanks_equipped = true;
-    }
 
     RAPTOR::external_fuel = 0.0;
     for (const auto& [s, fuel_qty] : RAPTOR::external_fuel_stations) {
@@ -1634,14 +1630,14 @@ void ed_fm_refueling_add_fuel(double fuel)
         if (remaining_fuel > 0 && !RAPTOR::external_fuel_stations.empty()) {
             size_t num_refuelable_stations = 0;
             for (const auto& [station, fuel_qty] : RAPTOR::external_fuel_stations) {
-                if ((station == 2 || station == 10) && fuel_qty > 0 && fuel_qty < 1850.0) {
+                if ((station == 2 || station == 10) && fuel_qty < 1850.0) {
                     num_refuelable_stations++;
                 }
             }
             if (num_refuelable_stations > 0) {
                 double fuel_per_station = remaining_fuel / num_refuelable_stations;
                 for (auto& [station, fuel_qty] : RAPTOR::external_fuel_stations) {
-                    if ((station == 2 || station == 10) && fuel_qty > 0 && fuel_qty < 1850.0) {
+                    if ((station == 2 || station == 10) && fuel_qty < 1850.0) {
                         double space = 1850.0 - fuel_qty;
                         double added = std::min(fuel_per_station, space);
                         fuel_qty += added;

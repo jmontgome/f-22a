@@ -269,50 +269,36 @@ function update()
 	parameters.HYD_LIGHT    :set(HYD_ARG)
 	parameters.DAY_NIGHT    :set(day_night)
 
-	if parameters.APU_RPM_STATE:get() >= 2 and parameters.MAIN_POWER:get() == 0 then
-		parameters.LMFD_ENG_PAGE:set(1)      
-		parameters.RMFD_BLANK_PAGE:set(1)     
-		parameters.CMFD_BLANK_PAGE:set(1)
-	elseif parameters.APU_RPM_STATE:get() >= 2 and parameters.MAIN_POWER:get() == 1 then
-		parameters.LMFD_ENG_PAGE:set(0)      
-		parameters.RMFD_BLANK_PAGE:set(0)     
-		parameters.CMFD_BLANK_PAGE:set(0)
-	elseif parameters.MAIN_POWER:get() == 0 then
-		parameters.LMFD_ENG_PAGE:set(0)     
-		parameters.RMFD_BLANK_PAGE:set(0)     
-		parameters.CMFD_BLANK_PAGE:set(0)
-	end
-
 	-- ALL SCREEN OPACITY LOGIC WITH DAY NIGHT MODE | UFD PAGE SWAP LOGIC | L-MFD ENG PAGE ONLY | C-MFD BAY PAGE ONLY | R-MFD CHK LIST ONLY 
-	if (parameters.MAIN_POWER:get() == 1 or parameters.APU_RPM_STATE:get() >= 2) and parameters.BATTERY_POWER:get() == 1 and day_night == 0 and R_UFD_ADI == 1 then
+	if parameters.MAIN_POWER:get() == 1 and day_night == 0 and R_UFD_ADI == 1 then
 		parameters.L_WAR_OPACITY:set(1)--WARNING PANEL LEFT ON
 		parameters.R_WAR_OPACITY:set(0)
 		parameters.UFD_OPACITY:set(UFD_KNOB)
 		parameters.MFD_OPACITY:set(MFD_KNOB)
 		parameters.FLOOD_LIGHT:set(FLOOD_KNOB)
 		parameters.PANEL_LIGHT:set(CONSOLE_KNOB)     
-	elseif (parameters.MAIN_POWER:get() == 1 or parameters.APU_RPM_STATE:get() >= 2) and parameters.BATTERY_POWER:get() == 1 and day_night == 0 and R_UFD_ADI == 0 then
+	elseif parameters.MAIN_POWER:get() == 1 and day_night == 0 and R_UFD_ADI == 0 then
 		parameters.L_WAR_OPACITY:set(0)
 		parameters.R_WAR_OPACITY:set(1)--WARNING PANEL RIGHT ON
 		parameters.UFD_OPACITY:set(UFD_KNOB)
 		parameters.MFD_OPACITY:set(MFD_KNOB)
 		parameters.FLOOD_LIGHT:set(FLOOD_KNOB)
 		parameters.PANEL_LIGHT:set(CONSOLE_KNOB)
-	elseif (parameters.MAIN_POWER:get() == 1 or parameters.APU_RPM_STATE:get() >= 2) and parameters.BATTERY_POWER:get() == 1 and day_night == 1 and R_UFD_ADI == 1 then
+	elseif parameters.MAIN_POWER:get() == 1 and day_night == 1 and R_UFD_ADI == 1 then
 		parameters.L_WAR_OPACITY:set(1)--WARNING PANEL LEFT ON	
 		parameters.R_WAR_OPACITY:set(0)
 		parameters.UFD_OPACITY:set(UFD_KNOB - 0.9)
 		parameters.MFD_OPACITY:set(MFD_KNOB - 0.9)
 		parameters.FLOOD_LIGHT:set(FLOOD_KNOB)
 		parameters.PANEL_LIGHT:set(CONSOLE_KNOB)
-	elseif (parameters.MAIN_POWER:get() == 1 or parameters.APU_RPM_STATE:get() >= 2) and parameters.BATTERY_POWER:get() == 1 and day_night == 1 and R_UFD_ADI == 0 then
+	elseif parameters.MAIN_POWER:get() == 1 and day_night == 1 and R_UFD_ADI == 0 then
 		parameters.L_WAR_OPACITY:set(0)
 		parameters.R_WAR_OPACITY:set(1)--WARNING PANEL RIGHT ON
 		parameters.UFD_OPACITY:set(UFD_KNOB - 0.9)
 		parameters.MFD_OPACITY:set(MFD_KNOB - 0.9)
 		parameters.FLOOD_LIGHT:set(FLOOD_KNOB)
 		parameters.PANEL_LIGHT:set(CONSOLE_KNOB)	
-	elseif parameters.MAIN_POWER:get() == 0 or parameters.APU_RPM_STATE:get() <= 1.9 then
+	elseif parameters.MAIN_POWER:get() == 0 then
 		parameters.L_WAR_OPACITY:set(0)
 		parameters.R_WAR_OPACITY:set(0)
 		parameters.UFD_OPACITY:set(0)
@@ -420,17 +406,6 @@ function update()
 		parameters.LMFD_MASK:set(0)
 		parameters.RMFD_MASK:set(0)
 		parameters.PMFD_MASK:set(0)
-	end
-	if parameters.BATTERY_POWER:get() == 0 then
-		parameters.R_ADI_OPACITY:set(0)
-		parameters.R_WAR_OPACITY:set(0)
-		parameters.L_ADI_OPACITY:set(0)
-		parameters.L_WAR_OPACITY:set(0)
-		parameters.UFD_OPACITY:set(0)
-		parameters.MFD_OPACITY:set(0)
-		parameters.FLOOD_LIGHT:set(0)
-		parameters.PANEL_LIGHT:set(0)
-		parameters.ICP_OPACITY:set(0)
 	end
 end
 

@@ -1905,6 +1905,8 @@ void CockpitManager::initialize() {
     param_handles_["APU_POWER"] = param_api_.getParamHandle("APU_POWER");
     param_handles_["BATTERY_POWER"] = param_api_.getParamHandle("BATTERY_POWER");
     param_handles_["MAIN_POWER"] = param_api_.getParamHandle("MAIN_POWER");
+    param_handles_["L_GEN_POWER"] = param_api_.getParamHandle("L_GEN_POWER");
+    param_handles_["R_GEN_POWER"] = param_api_.getParamHandle("R_GEN_POWER");
     param_handles_["WoW"] = param_api_.getParamHandle("WoW");
     param_handles_["AAR"] = param_api_.getParamHandle("AAR");
     param_handles_["N_GEAR_LIGHT"] = param_api_.getParamHandle("N_GEAR_LIGHT");
@@ -1925,9 +1927,6 @@ void CockpitManager::initialize() {
 }
 
 void CockpitManager::update(double dt) {
-    param_api_.setParamNumber(param_handles_["MAIN_POWER"], (RAPTOR::left_engine_state == RAPTOR::RUNNING || RAPTOR::right_engine_state == RAPTOR::RUNNING) ? 1.0 : 0.0);
-    param_api_.setParamNumber(param_handles_["BATTERY_POWER"], (RAPTOR::left_engine_switch || RAPTOR::right_engine_switch) ? 1.0 : 0.0);
-
     updateGearLights(dt);
     updateTaxiLandingLights(dt);
     updateAARLight(dt);
@@ -1975,12 +1974,6 @@ double CockpitManager::getParameter(const std::string& name, double fallback_val
     if (result != result) {
         if (name == "WoW") {
             return RAPTOR::on_ground ? 1.0 : 0.0;
-        }
-        else if (name == "MAIN_POWER") {
-            return (RAPTOR::left_engine_state == RAPTOR::RUNNING || RAPTOR::right_engine_state == RAPTOR::RUNNING) ? 1.0 : 0.0;
-        }
-        else if (name == "BATTERY_POWER") {
-            return (RAPTOR::left_engine_switch || RAPTOR::right_engine_switch) ? 1.0 : 0.0;
         }
         return fallback_value;
     }

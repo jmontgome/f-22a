@@ -80,6 +80,7 @@ local R_gen_state 	= 0 --track on off state
 local L_gen_pwr 	= 0
 local R_gen_pwr 	= 0
 local main_pwr		= 0
+local main_pwr_prev = 0
 local B_axis_value  = -1
 local park_state    = 0 
 local gpu_cart		= 0
@@ -189,7 +190,6 @@ function post_initialize()
 	if birth == "GROUND_HOT" or birth == "AIR_HOT" then
 		L_cutoff = 1
 		R_cutoff = 1
-		dispatch_action(nil,PowerOnOff)
 		dev:performClickableAction(battery_switch, 1, false)--set battery switch ON
 		dev:performClickableAction(L_gen_switch, 1, false)--set L Gen switch ON
 		dev:performClickableAction(R_gen_switch, 1, false)--set R Gen switch ON
@@ -285,11 +285,9 @@ end
 --Battery Switch Click
 		if (command == battery_switch or command == 10009 or command == 10010) and battery_state == 0 then
 			battery_state = 1
-			dispatch_action(nil, PowerOnOff)
 			--print_message_to_user("BAT ON")
 		elseif (command == battery_switch or command == 10009 or command == 10010) and battery_state == 1 then
 			battery_state = 0
-			dispatch_action(nil, PowerOnOff)
 			--print_message_to_user("BAT OFF")
 		end
 --Left Gen Switch
@@ -518,24 +516,6 @@ function update()
 	-- 	dispatch_action(nil,75)
 	-- end
 
-	--Param
-	APU_POWER		:set(apu_pwr)
-	APU_RPM_STATE	:set(apu_rpm)
-	BATTERY_POWER	:set(battery_state)
-	MAIN_POWER		:set(main_pwr)
-	UFD_ADI			:set(ufd_swap_adi)
-	L_GEN_POWER		:set(L_gen_state)
-	R_GEN_POWER		:set(R_gen_state)
-	PARK		    :set(park_state)
-	B_TOE			:set(B_axis_value)
-	L_TOE			:set(L_axis_value)
-	R_TOE			:set(R_axis_value)
-	L_THROTTLE_CUT  :set(L_cutoff)
-	L_THROTTLE_POS  :set(L_throttle_pos)
-	R_THROTTLE_CUT  :set(R_cutoff)
-	R_THROTTLE_POS  :set(R_throttle_pos)
-	--GROUND_POWER	:set(gpu_cart)
-
 	--print_message_to_user(B_axis_value)
 	
 	playLoopingSoundFromParam(SOUND_APU, sound_apu)
@@ -595,11 +575,17 @@ function update()
 		--print_message_to_user("RIGHT GEN OFF (NO POWER) ")
 	end
 	--FULL POWER
-	if L_gen_pwr == 1 or R_gen_pwr == 1 or GROUND_POWER:get() == 1 then
+
+	if battery_state == 1 or apu_pwr == 1 or L_gen_pwr == 1 or R_gen_pwr == 1 or GROUND_POWER:get() == 1 then
 		main_pwr = 1
 	else
 		main_pwr = 0
 	end
+	if main_pwr ~= main_pwr_prev then
+		dispatch_action(nil, PowerOnOff)
+		main_pwr_prev = main_pwr
+	end
+
 	--Update Connectors On moving Throttles	
 	local L_THROTTLE = get_cockpit_draw_argument_value(768)
 	if prev_L_throttle_val ~= L_THROTTLE then
@@ -696,7 +682,24 @@ function update()
 		dev:performClickableAction(apu_switch, -1, false)--set apu switch OFF
 	end
 
-
+		--Param
+	APU_POWER		:set(apu_pwr)
+	APU_RPM_STATE	:set(apu_rpm)
+	BATTERY_POWER	:set(battery_state)
+	MAIN_POWER		:set(main_pwr)
+	UFD_ADI			:set(ufd_swap_adi)
+	L_GEN_POWER		:set(L_gen_state)
+	R_GEN_POWER		:set(R_gen_state)
+	UFD_ADI			:set(ufd_swap_adi)
+	PARK		    :set(park_state)
+	B_TOE			:set(B_axis_value)
+	L_TOE			:set(L_axis_value)
+	R_TOE			:set(R_axis_value)
+	L_THROTTLE_CUT  :set(L_cutoff)
+	L_THROTTLE_POS  :set(L_throttle_pos)
+	R_THROTTLE_CUT  :set(R_cutoff)
+	R_THROTTLE_POS  :set(R_throttle_pos)
+	--GROUND_POWER	:set(gpu_cart)
 end
 ------------------------------------------------------------------FUNCTION-UPDATE-END-----------------------------------------------------------------------------------------------
 function delay_time()

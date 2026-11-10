@@ -1266,10 +1266,12 @@ double ed_fm_get_internal_fuel() {
 void ed_fm_set_external_fuel(int station, double fuel, double x, double y, double z) {
     if (fuel > 0 && RAPTOR::external_fuel_stations.find(station) == RAPTOR::external_fuel_stations.end()) {
         RAPTOR::external_fuel_stations[station] = fuel;
+        RAPTOR::external_fuel_station_pos[station] = { x, y, z};
         RAPTOR::external_tanks_equipped = true;
     }
     else if (fuel <= 0) {
         RAPTOR::external_fuel_stations.erase(station);
+        RAPTOR::external_fuel_station_pos.erase(station);
         RAPTOR::external_tanks_equipped = !RAPTOR::external_fuel_stations.empty();
     }
 
@@ -1641,6 +1643,13 @@ void ed_fm_refueling_add_fuel(double fuel)
                         double space = 1850.0 - fuel_qty;
                         double added = std::min(fuel_per_station, space);
                         fuel_qty += added;
+
+                        if (added > 0) {
+                            Vec3 pos = RAPTOR::external_fuel_station_pos.count(station)
+                                ? RAPTOR::external_fuel_station_pos[station]
+                                : Vec3(0.0, 0.0, 0.0);
+                            g_mass_changes.push({ -added, pos, {0.0, 0.0, 0.0} });
+                        }
                     }
                 }
                 RAPTOR::external_fuel = 0.0;

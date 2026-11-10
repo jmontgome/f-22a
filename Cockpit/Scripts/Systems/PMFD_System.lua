@@ -356,14 +356,6 @@ function update()
     --     pmfd_current_page = (pmfd_current_page)    
     -- end
 
-    if parameters.APU_RPM_STATE:get() >= 2 and parameters.MAIN_POWER:get() == 0 then
-		parameters.PMFD_BLANK_PAGE:set(1)      
-	elseif parameters.APU_RPM_STATE:get() >= 2 and parameters.MAIN_POWER:get() == 1 then
-		parameters.PMFD_BLANK_PAGE:set(0)   
-	elseif parameters.MAIN_POWER:get() == 0 then
-		parameters.PMFD_BLANK_PAGE:set(0)
-	end
-
     if pmfd_current_page == 0 and parameters.MAIN_POWER:get() == 1 then --MENU --FIX THIS FUCKING SHIT
         parameters.PMFD_MENU_PAGE:set(1)
         parameters.PMFD_RDR_PAGE:set(0)

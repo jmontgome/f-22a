@@ -159,7 +159,7 @@ function SetCommand(command,value)
 	--Eject handle
 	if command == eject_handle then
 		dispatch_action(nil,83)
-		print_message_to_user("EJECT!!!")
+		--print_message_to_user("EJECT!!!")
 	end
 	-- Day/Night switch
 	if (command == day_night_switch or command == 10017 or command == 10018) and day_night == 0 then

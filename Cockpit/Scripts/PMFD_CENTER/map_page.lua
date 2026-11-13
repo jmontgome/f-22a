@@ -68,7 +68,7 @@ local RedColor 				= {255, 0, 0, 255}--RGBA
 local ScreenColor			= {3, 3, 12, 255}--RGBA 5-5-5
 
 --local PFD_PAGE_1 = MakeMaterial(LockOn_Options.script_path.."../Scripts/IndicationTextures/pfd_page_1.dds", GreenColor)--SYSTEM TEST
-local MASK_BOX	 = MakeMaterial(LockOn_Options.script_path.."../Scripts/IndicationTextures/mask_bx.dds", ScreenColor)--SYSTEM TEST
+local MASK_BOX	 = MakeMaterial(LockOn_Options.script_path.."../Scripts/IndicationTextures/mask_box.dds", ScreenColor)--SYSTEM TEST
 ------------------------------------------------------------------------------------------------CLIPPING-MASK-------------------------------------------
     local ClippingPlaneSize = 1.1 --Clipping Masks
     local ClippingWidth 	= 1.1--Clipping Masks

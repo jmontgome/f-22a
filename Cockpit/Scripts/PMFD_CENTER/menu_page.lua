@@ -224,7 +224,7 @@ Add(MENUTEXT)
 MAPTEXT 					    = CreateElement "ceStringPoly"
 MAPTEXT.name 				    = "menu"
 MAPTEXT.material 			    = UFD_YEL
-MAPTEXT.value 				    = "TID" --changed it for a meme
+MAPTEXT.value 				    = "MAP"
 MAPTEXT.stringdefs 		        = {0.0050, 0.0050, 0.0004, 0.001}
 MAPTEXT.alignment 			    = "CenterCenter"
 MAPTEXT.formats 			    = {"%s"}

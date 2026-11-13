@@ -190,6 +190,7 @@ function post_initialize()
 	if birth == "GROUND_HOT" or birth == "AIR_HOT" then
 		L_cutoff = 1
 		R_cutoff = 1
+		main_pwr_prev = 1 -- native power already on for a hot start
 		dev:performClickableAction(battery_switch, 1, false)--set battery switch ON
 		dev:performClickableAction(L_gen_switch, 1, false)--set L Gen switch ON
 		dev:performClickableAction(R_gen_switch, 1, false)--set R Gen switch ON
